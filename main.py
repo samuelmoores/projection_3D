@@ -31,6 +31,7 @@ projection_matrix = np.matrix([
     [0, 1, 0]
 ])
 
+
 # -------------------------- Begin -------------------------------------
 pygame.display.set_caption("3D projection in python")
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -48,6 +49,18 @@ while True:
                 pygame.quit()
                 exit()
 
+    rotation_matrix_x = np.matrix([
+        [1, 0, 0],
+        [0, cos(angle), -sin(angle)],
+        [0, sin(angle), cos(angle)],
+    ])
+
+    rotation_matrix_y = np.matrix([
+        [cos(angle), 0, sin(angle)],
+        [0, 1, 0],
+        [-sin(angle), 0, cos(angle)],
+    ])
+
     rotation_matrix_z = np.matrix([
         [cos(angle), -sin(angle), 0],
         [sin(angle), cos(angle), 0],
@@ -61,6 +74,8 @@ while True:
     # draw points
     for point in points:
         rotated_2D = np.dot(rotation_matrix_z, point.reshape((3, 1)))
+        rotated_2D = np.dot(rotation_matrix_y, rotated_2D)
+        rotated_2D = np.dot(rotation_matrix_x, rotated_2D)
         projected_2D = np.dot(projection_matrix, rotated_2D)
 
         x = int(projected_2D[0][0] * scale) + circle_pos[0]
